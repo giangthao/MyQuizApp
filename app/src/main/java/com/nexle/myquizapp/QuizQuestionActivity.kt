@@ -14,6 +14,7 @@ class QuizQuestionActivity : AppCompatActivity(),View.OnClickListener {
     private var mCurrentPosition: Int =1
     private var mQuestionList:ArrayList<Question>?=null
     private var mSelectedOptionPosition : Int = 0
+    private var mUserName:String? = null
 
 
     private  var progressBar: ProgressBar? = null
@@ -30,6 +31,7 @@ class QuizQuestionActivity : AppCompatActivity(),View.OnClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_quiz_question)
+        mUserName = intent.getStringExtra(Constrants.USER_NAME)
 
         progressBar = findViewById(R.id.progressBar)
         tvProgress  = findViewById(R.id.tv_progress)
@@ -136,7 +138,7 @@ class QuizQuestionActivity : AppCompatActivity(),View.OnClickListener {
                 if(mSelectedOptionPosition == 0){
                     mCurrentPosition++
                     when{
-                        mCurrentPosition <= mQuestionList!!.size -> {
+                        mCurrentPosition <= mQuestionList?.size?:0 -> {
                             setQuestion()
                         }
                         else -> {
@@ -144,19 +146,40 @@ class QuizQuestionActivity : AppCompatActivity(),View.OnClickListener {
                         }
                     }
                 } else {
-                    val question = mQuestionList?.get(mCurrentPosition - 1)
-                    if(question!!.correctAnswer != mSelectedOptionPosition){
-                        answerView(mSelectedOptionPosition, R.drawable.wrong_option_border_bg)
-                    }
-                    answerView(question.correctAnswer, R.drawable.correct_option_border_bg)
-                    if(mCurrentPosition == mQuestionList!!.size)
-                    {
-                        btnSubmit?.text = "FINISH"
-                    } else {
-                        btnSubmit?.text = "GO TO THE NEXT QUESTION"
+                    //mQuestionList = null
+                    mQuestionList?.let {
+                        val question = it.get(mCurrentPosition - 1)
+                        if(question.correctAnswer != mSelectedOptionPosition){
+                            answerView(mSelectedOptionPosition, R.drawable.wrong_option_border_bg)
+                        }
+                        answerView(question.correctAnswer, R.drawable.correct_option_border_bg)
+                        if(mCurrentPosition == it.size)
+                        {
+                            btnSubmit?.text = "FINISH"
+                        } else {
+                            btnSubmit?.text = "GO TO THE NEXT QUESTION"
 
+                        }
+                        mSelectedOptionPosition = 0
                     }
-                    mSelectedOptionPosition = 0
+//                    if (mQuestionList != null) {
+//                        val question = mQuestionList!!.get(mCurrentPosition - 1)
+//                        if(question!!.correctAnswer != mSelectedOptionPosition){
+//                            answerView(mSelectedOptionPosition, R.drawable.wrong_option_border_bg)
+//                        }
+//                        answerView(question.correctAnswer, R.drawable.correct_option_border_bg)
+////                    mQuestionList != null && mQuestionList!!.size
+////                    mQuestionList?.size
+//                        mQuestionList = null
+//                        if(mCurrentPosition == mQuestionList!!.size)
+//                        {
+//                            btnSubmit?.text = "FINISH"
+//                        } else {
+//                            btnSubmit?.text = "GO TO THE NEXT QUESTION"
+//
+//                        }
+//                        mSelectedOptionPosition = 0
+//                    }
                 }
             }
 
