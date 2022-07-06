@@ -1,5 +1,6 @@
 package com.nexle.myquizapp
 
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import androidx.appcompat.app.AppCompatActivity
@@ -15,6 +16,8 @@ class QuizQuestionActivity : AppCompatActivity(),View.OnClickListener {
     private var mQuestionList:ArrayList<Question>?=null
     private var mSelectedOptionPosition : Int = 0
     private var mUserName:String? = null
+    private var mCorrectAnswer : Int = 0
+    private var rateCorrectAnswer : Double = 0.0
 
 
     private  var progressBar: ProgressBar? = null
@@ -142,7 +145,12 @@ class QuizQuestionActivity : AppCompatActivity(),View.OnClickListener {
                             setQuestion()
                         }
                         else -> {
-                            Toast.makeText(this,"You made it to the end",Toast.LENGTH_LONG).show()
+                            val intent = Intent(this, ResultActivity::class.java)
+                            intent.putExtra(Constrants.USER_NAME,mUserName)
+                            intent.putExtra(Constrants.CORRECT_ANSWERS,mCorrectAnswer)
+                            intent.putExtra(Constrants.TOTAL_QUESTION,mQuestionList!!.size)
+                            startActivity(intent)
+                            finish()
                         }
                     }
                 } else {
@@ -151,6 +159,8 @@ class QuizQuestionActivity : AppCompatActivity(),View.OnClickListener {
                         val question = it.get(mCurrentPosition - 1)
                         if(question.correctAnswer != mSelectedOptionPosition){
                             answerView(mSelectedOptionPosition, R.drawable.wrong_option_border_bg)
+                        } else{
+                            mCorrectAnswer++
                         }
                         answerView(question.correctAnswer, R.drawable.correct_option_border_bg)
                         if(mCurrentPosition == it.size)
